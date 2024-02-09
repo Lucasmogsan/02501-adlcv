@@ -13,6 +13,10 @@ from vit import ViT
 
 import matplotlib.pyplot as plt
 
+import hydra
+import wandb
+from datetime import datetime
+
 def set_seed(seed=1):
     random.seed(seed)
     np.random.seed(seed)
@@ -61,14 +65,58 @@ def prepare_dataloaders(batch_size, classes=[3, 7]):
     )
     return trainloader, testloader, trainset, testset
 
+@hydra.main(version_base=None, config_path="config", config_name="default_config.yaml")
+def main(cfg):
+    date_time = datetime.now().strftime("%Y%m%d_%H%M")
 
-def main(image_size=(32,32), patch_size=(4,4), channels=3, 
-         embed_dim=128, num_heads=4, num_layers=4, num_classes=2,
-         pos_enc='learnable', pool='cls', dropout=0.3, fc_dim=None, 
-         num_epochs=20, batch_size=16, lr=1e-4, warmup_steps=625,
-         weight_decay=1e-3, gradient_clipping=1
-         
-    ):
+    # Read hyperparameters for experiment
+    hparams = cfg.experiment
+    image_size = hparams["image_size"]
+    patch_size = hparams["patch_size"]
+    channels = hparams["channels"]
+    embed_dim = hparams["embed_dim"]
+    num_heads = hparams["num_heads"]
+    num_layers = hparams["num_layers"]
+    num_classes = hparams["num_classes"]
+    pos_enc = hparams["pos_enc"]
+    pool = hparams["pool"]
+    dropout = hparams["dropout"]
+    fc_dim = hparams["fc_dim"]
+    num_epochs = hparams["num_epochs"]
+    batch_size = hparams["batch_size"]
+    lr = hparams["lr"]
+    warmup_steps = hparams["warmup_steps"]
+    weight_decay = hparams["weight_decay"]
+    gradient_clipping = hparams["gradient_clipping"]
+
+    # ✨ W&B: setup
+    wandb_cfg = {
+        "image_size": image_size,
+        "patch_size": patch_size,
+        "channels": channels,
+        "embed_dim": embed_dim,
+        "num_classes": num_classes,
+        "num_heads": num_heads,
+        "num_layers": num_layers,
+        "num_epochs": num_epochs,
+        "pos_enc": pos_enc,
+        "pool": pool,
+        "dropout": dropout,
+        "fc_dim": fc_dim,
+        "learning_rate": lr,
+        "batch_size": batch_size,
+        "warmup_steps": warmup_steps,
+        "weight_decay": weight_decay,
+        "gradient_clipping": gradient_clipping,
+    }
+    wandb.init(
+        project="ex-2",
+        entity="adlcv",
+        config=wandb_cfg,
+        job_type="train",
+        name="train_" + date_time,
+        dir="./outputs",
+    )
 
     loss_function = nn.CrossEntropyLoss()
 
@@ -89,7 +137,7 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
     # training loop
     best_val_loss = 1e10
     for e in range(num_epochs):
-        print(f'\n epoch {e}')
+        print(f'\n epoch {e+1}')
         model.train()
         train_loss = 0
         for image, label in tqdm.tqdm(train_iter):
@@ -123,7 +171,10 @@ def main(image_size=(32,32), patch_size=(4,4), channels=3,
                 cor += float((label == out).sum().item())
             acc = cor / tot
             val_loss /= len(test_iter)
-            print(f'-- train loss {train_loss:.3f} -- validation accuracy {acc:.3f} -- validation loss: {val_loss:.3f}')          
+            print(f'-- train loss {train_loss:.3f} -- validation accuracy {acc:.3f} -- validation loss: {val_loss:.3f}')
+            wandb.log({"train_loss": train_loss})
+            wandb.log({"validation_accuracy": acc})
+            wandb.log({"validation_loss": val_loss})         
             if val_loss <= best_val_loss:
                 torch.save(model.state_dict(), 'model.pth')
                 best_val_loss = val_loss

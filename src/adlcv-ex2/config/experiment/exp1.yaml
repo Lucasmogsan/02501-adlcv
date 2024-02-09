@@ -1,0 +1,18 @@
+#config.yaml
+image_size: [32, 32]
+patch_size: [4, 4]
+channels: 3
+embed_dim: 128
+num_heads: 4
+num_layers: 4
+num_classes: 2
+pos_enc: 'learnable'
+pool: 'cls'
+dropout: 0.3
+fc_dim: !!null
+num_epochs: 20
+batch_size: 16
+lr: 1e-4
+warmup_steps: 625
+weight_decay: 1e-3
+gradient_clipping: 1
