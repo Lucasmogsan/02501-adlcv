@@ -1,0 +1,8 @@
+matplotlib
+einops
+seaborn
+tqdm
+torchtext==0.6.0
+hydra-core == 1.3.2
+torchinfo
+wandb

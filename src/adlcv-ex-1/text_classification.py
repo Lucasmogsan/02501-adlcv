@@ -9,11 +9,15 @@ import tqdm
 
 from transformer import TransformerClassifier, to_device
 import hydra
+import wandb
+from datetime import datetime
 
 NUM_CLS = 2
 VOCAB_SIZE = 50_000
 SAMPLED_RATIO = 0.2
 MAX_SEQ_LEN = 512
+
+
 
 def set_seed(seed=1):
     random.seed(seed)
@@ -43,6 +47,8 @@ def prepare_data_iter(sampled_ratio=0.2, batch_size=16):
 
 @hydra.main(version_base=None, config_path="config", config_name="default_config.yaml")
 def main(cfg):
+    date_time = datetime.now().strftime("%Y%m%d_%H%M")
+
     # Read hyperparameters for experiment
     hparams = cfg.experiment
     embed_dim = hparams["embed_dim"]
@@ -58,6 +64,31 @@ def main(cfg):
     warmup_steps = hparams["warmup_steps"]
     weight_decay = hparams["weight_decay"]
     gradient_clipping = hparams["gradient_clipping"]
+
+    # ✨ W&B: setup
+    wandb_cfg = {
+        "embed_dim": embed_dim,
+        "num_heads": num_heads,
+        "num_layers": num_layers,
+        "num_epochs": num_epochs,
+        "pos_enc": pos_enc,
+        "pool": pool,
+        "dropout": dropout,
+        "fc_dim": fc_dim,
+        "learning_rate": lr,
+        "batch_size": batch_size,
+        "warmup_steps": warmup_steps,
+        "weight_decay": weight_decay,
+        "gradient_clipping": gradient_clipping,
+    }
+    wandb.init(
+        project="ex-1",
+        entity="adlcv",
+        config=wandb_cfg,
+        job_type="train",
+        name="train_" + date_time,
+        dir="./outputs",
+    )
         
     
     loss_function = nn.CrossEntropyLoss()
@@ -122,6 +153,9 @@ def main(cfg):
                 cor += float((label == out).sum().item())
             acc = cor / tot
             print(f'-- {"validation"} accuracy {acc:.3}')
+        
+        wandb.log({"train_loss": loss})
+        wandb.log({"validation_acc": acc})
 
 
 if __name__ == "__main__":
