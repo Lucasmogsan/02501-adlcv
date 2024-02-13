@@ -14,6 +14,8 @@ from model import UNet
 from dataset.helpers import im_normalize, tens2image
 from dataset import SpritesDataset
 
+from pathlib import Path
+
 def show(imgs, title=None, fig_titles=None, save_path=None): 
 
     if fig_titles is not None:
@@ -57,20 +59,7 @@ if __name__ == '__main__':
     show(example_images, 'Example sprites', save_path='assets/example.png')
 
     ################## Diffusion class ##################
-    # TASK 1: Implement beta, alpha, and alpha_hat
-
-    # beta: between 10e-4 and 0.02 with T steps
-    T = 500
-    beta = torch.linspace(10e-4, 0.02, T).to(device)
-
-    # alpha: 1 - beta
-    alpha = 1 - beta
-
-    # alpha_hat: The cumulative product of alpha
-    alpha_bar = torch.cumprod(alpha, dim=0)
-
-
-
+    # TASK 1: Implement beta, alpha, and alpha_hat (in ddpm.py)
     diffusion = Diffusion(device=device)
     plt.figure()
     plt.plot(range(1,diffusion.T+1), diffusion.alphas.cpu().numpy(), label='alphas', linewidth=3)
@@ -100,7 +89,7 @@ if __name__ == '__main__':
     model = UNet(device=device)
     model.eval()
     model.to(device)
-    model.load_state_dict(torch.load('models/weights-59epochs-full-dataset.pt', map_location=device)) # load the given model
+    model.load_state_dict(torch.load(Path(__file__).resolve().parent / 'models/weights-59epochs-full-dataset.pt', map_location=device)) # load the given model
     torch.manual_seed(seed)
 
     # TASK 3: Implement it in the diffusion class
