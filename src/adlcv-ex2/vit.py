@@ -121,6 +121,7 @@ class ViT(nn.Module):
 
         self.to_patch_embedding = nn.Sequential(
             Rearrange('b c (nph ph) (npw pw) -> b (nph npw) (ph pw c)', ph=patch_h, pw=patch_w),
+            # Shape: B C H W -> B x C x nph x ph x npw x pw -> B x (nph*npw ) x C x ph x pw
             nn.LayerNorm(patch_dim),
             nn.Linear(patch_dim, embed_dim),
             nn.LayerNorm(embed_dim)
