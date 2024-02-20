@@ -46,10 +46,10 @@ class Diffusion:
         # TASK 2: Implement the forward process
         # HINT: use torch.sqrt to calculate the sqrt of alphas_bar at timestep t
         sqrt_alpha_bar =  torch.sqrt(self.alphas_bar[t])
-        print('Initial alpha_bar shape',sqrt_alpha_bar.shape)
+        #print('Initial alpha_bar shape',sqrt_alpha_bar.shape)
 
         sqrt_alpha_bar = sqrt_alpha_bar[:, None, None, None] # match image dimensions
-        print('Post reshape alpha_bar shape',sqrt_alpha_bar.shape)
+        #print('Post reshape alpha_bar shape',sqrt_alpha_bar.shape)
 
         # HINT: calculate the sqrt of 1 - alphas_bar at time step t
         sqrt_one_minus_alpha_bar = torch.sqrt(1. - self.alphas_bar[t])
@@ -62,8 +62,8 @@ class Diffusion:
         
         # HINT: Create the noisy version of x. See Eq. 4 in the ddpm paper at page 2
         x_noised = sqrt_alpha_bar * x + sqrt_one_minus_alpha_bar * noise
-        print('Noised image shape',x_noised.shape)
-        print('Returns the steps - multiple images and noise')
+        #print('Noised image shape',x_noised.shape)
+        #print('Returns the steps - multiple images and noise')
         return x_noised, noise
     
 
