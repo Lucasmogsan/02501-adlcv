@@ -1,5 +1,6 @@
 ### Conda installation
 Install from [https://docs.anaconda.com/free/miniconda/](https://docs.anaconda.com/free/miniconda/).
+Follow [https://www.hpc.dtu.dk/?page_id=3678](https://www.hpc.dtu.dk/?page_id=3678) for DTU HPC setup.
 
 ```bash
 cd ~
