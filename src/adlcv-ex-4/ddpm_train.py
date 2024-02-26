@@ -137,7 +137,6 @@ def main():
         exp_name = 'DDPM'
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    device = 'cpu'
     print(f"Model will run on {device}, classifier-free guidance: {cfg} \n")
     
     if not cfg:

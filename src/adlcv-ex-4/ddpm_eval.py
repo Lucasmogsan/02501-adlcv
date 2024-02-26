@@ -53,9 +53,25 @@ def frechet_distance(mu1, sigma1, mu2, sigma2):
     # HINT: https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.sqrtm.html
     # Implement FID score
 
-    fid = ...
+    fid = np.sum((np.abs(mu1 - mu2))**2) + np.trace(sigma1 + sigma2 - 2*linalg.sqrtm(sigma1@sigma2))
 
     return fid
+
+def test_fid(model, test_loader):
+
+    # Test FID with exact same images
+    images, _ = next(iter(test_loader))
+    original_feat = get_features(model, images)
+    mu_original, sigma_original = feature_statistics(original_feat)
+    fid_same = frechet_distance(mu_original, sigma_original, mu_original, sigma_original)
+    print(f'[FID same] {fid_same:.3f}')
+
+    # Test FID with pure random noise images
+    noise = torch.rand_like(images)
+    noise_feat = get_features(model, noise)
+    mu_noise, sigma_noise = feature_statistics(noise_feat)
+    fid_noise = frechet_distance(mu_original, sigma_original, mu_noise, sigma_noise)
+    print(f'[FID noise] {fid_noise:.3f}')
 
 if __name__ == '__main__':
     set_seed()
@@ -91,6 +107,8 @@ if __name__ == '__main__':
     dims = 256 # vgg feature dim
 
     _ ,_, test_loader = prepare_dataloaders(val_batch_size=100)
+
+    test_fid(model,test_loader)
 
     vgg_transform = torchvision.transforms.Compose([
         torchvision.transforms.Normalize((0.5,), (0.5,))
@@ -135,3 +153,5 @@ if __name__ == '__main__':
     fid_cFg = frechet_distance(mu_original, sigma_original, mu_cFg, sigma_cFg)
     print(f'[FID classifier guidance] {fid_cg:.3f}')
     print(f'[classifier-free guidance] {fid_cFg:.3f}')
+
+
