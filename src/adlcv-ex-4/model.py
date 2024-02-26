@@ -138,7 +138,7 @@ class UNet(nn.Module):
         self.outc = nn.Conv2d(channels, c_out, kernel_size=1)
 
         if num_classes is not None:
-            # Project one-hot encoded labels to the time embedding dimension 
+            # Project one-hot encoded labels to the time embedding dimension (so they can be added together) 
             # Implement it as a 2-layer MLP with a GELU activation in-between
             self.label_emb = nn.Sequential(
                 nn.Linear(num_classes, time_dim),
@@ -153,7 +153,7 @@ class UNet(nn.Module):
         t = pos_encoding(t, self.time_dim, self.device)
 
         if y is not None:
-            # Add label and time embeddings together
+            # Add label (y) and time (t) embeddings together
             t = t + self.label_emb(y)
             pass
             
@@ -194,11 +194,9 @@ class Classifier(nn.Module):
         self.bot1 = DoubleConv(channels*4, channels*8)
 
         self.outc = nn.Sequential(
-            # Is a non-linear activation function needed here?
             nn.Flatten(),
             nn.Linear(channels*8*img_size//8*img_size//8, labels)
         )
-
 
     def forward(self, x, t):
 

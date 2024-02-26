@@ -80,16 +80,20 @@ def train(T=500, cfg=True, img_size=16, input_channels=3, channels=32,
             else :
                 labels = None
 
-            # Train a diffusion model with classifier-free guidance
-            # Do not forget randomly discard labels
+            # Train a diffusion model with classifier-free guidance:
+            # Randomly discard labels
             p_uncod = 0.1
+            if np.random.rand() < p_uncod:
+                labels = None
 
-            ...
-
-            t = ...
-            x_t, noise = ...
-            predicted_noise = ...
-            loss = ...
+            # Use the diffusion object to sample timesteps for the images
+            t = diffusion.sample_timesteps(images.shape[0]).to(device)
+            # Inject noise to the images (forward process)
+            x_t, noise = diffusion.q_sample(images, t)
+            # predict noise of x_t using the UNet (now with classifier-free guidance)
+            predicted_noise = model(x_t, t, y=labels)
+            # Calculate the mean squared error between the predicted noise and the actual noise
+            loss = mse(noise, predicted_noise)
 
             optimizer.zero_grad()
             loss.backward()
@@ -133,6 +137,7 @@ def main():
         exp_name = 'DDPM'
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = 'cpu'
     print(f"Model will run on {device}, classifier-free guidance: {cfg} \n")
     
     if not cfg:
