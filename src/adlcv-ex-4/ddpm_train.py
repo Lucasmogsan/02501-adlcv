@@ -142,7 +142,7 @@ def main():
     
     if not cfg:
         print(f"To train a classifier-free guidance model, activate the flag by running the script as follows>")
-        print(f"python ddm_train.py --cfg \n")
+        print(f"python ddpm_train.py --cfg \n")
         
 
     set_seed()
