@@ -159,15 +159,21 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-*.data
-*data
+.data
+data
+outputs
+model.pth
 
-*.pth
-*outputs
+
+src/adlcv-ex-1/outputs
+
+src/adlcv-ex-2/model.pth
 
 src/adlcv-ex-3/models
 src/adlcv-ex-3/results
 src/adlcv-ex-3/runs
 src/adlcv-ex-3/exercise/models
+
 src/adlcv-ex-4/results
 src/adlcv-ex-4/runs
+src/adlcv-ex-4/weights
