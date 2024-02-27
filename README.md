@@ -3,8 +3,14 @@ cd ~
 conda create -n dtu-02501-adlcv python=3.8
 conda activate dtu-02501-adlcv
 pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia # for ex4
+conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia # for ex5
 cd 02501-adlcv
 pip install -r requirements.txts
+```
+got some errors (circular import). solve by:
+```bash
+pip install --force-reinstall gdown
 ```
 
 
@@ -14,6 +20,9 @@ pip install -r requirements.txts
 ```bash
 ssh hpc
 ```
+
+You can see the hpc directory from connect to server in Files: sftp://s223093@transfer.gbar.dtu.dk/
+
 
 2. Use GPU node interactively (see [https://www.hpc.dtu.dk/?page_id=2129](https://www.hpc.dtu.dk/?page_id=2129)). Example:
 ```bash
