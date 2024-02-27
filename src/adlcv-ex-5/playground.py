@@ -173,7 +173,7 @@ log_space = True
 embedder = Embedder(d_input, n_freqs, log_space)
 
 points = pts.reshape((-1, 3))
-idxs =  torch.linspace(0, pts.shape[0], steps=20, dtype=torch.int64)
+idxs =  torch.linspace(0, pts.shape[0], steps=20, dtype=torch.long)
 points = points[idxs]
 embeddings = embedder(points).cpu().detach().numpy()
 
