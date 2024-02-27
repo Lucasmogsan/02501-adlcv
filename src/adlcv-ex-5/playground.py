@@ -62,7 +62,6 @@ def make_video(images, title='Sparse poses', save_path=None):
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-device = 'cpu'
 print(f'The code will run on {device}')
 
 scene_name = 'lego' # IMPORTANT: dont change the scene name! You can change it in the training script.

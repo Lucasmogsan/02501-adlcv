@@ -46,21 +46,23 @@ class NeRF(nn.Module):
         h = input_pts
         # for each layer with index i
         for i, l in enumerate(self.pts_linears):
+            # These are the linear layers of the network. For the skips we add the points to the network.
             # HINT: feed h to the layer i and rewrite to h
             h = l(h)
             # HINT: use relu
             h = self.relu(h)
             if i in self.skips:
-                # implement skip with torch.cat - WHY
-                h = torch.cat([h, input_pts], -1)
+                # implement skip with torch.cat - this is the step where we add the input points to the hidden layer
+                h = torch.cat([input_pts, h], dim=-1) # This order as the pretrained model is like this.
 
         if self.d_viewdirs is not None:
+            # Splitting into two blocks... One to output alpha (related to sigma, density) and another to output some features which is concatenated with the view angles.
             # HINT: feed h to alpha linear
             alpha = self.alpha_linear(h)
             # HINT: feed h to feature linear
             feature = self.feature_linear(h)
             # HINT: concat feature and input_views to create the input for the views_linreas
-            h = torch.cat([feature, input_views], -1) 
+            h = torch.cat([feature, input_views], dim=-1) 
         
             for i, l in enumerate(self.views_linears):
                 # HINT: forward for views_linears of i
@@ -71,7 +73,7 @@ class NeRF(nn.Module):
             # HINT: calculate rgb values with rgb_layer
             rgb = self.rgb_linear(h)
             # HINT: concat rgb and alpha
-            outputs = torch.cat([rgb, alpha], -1) 
+            outputs = torch.cat([rgb, alpha], dim=-1) 
         else:
             outputs = self.output_linear(h)
 

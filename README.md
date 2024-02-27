@@ -13,6 +13,13 @@ got some errors (circular import). solve by:
 pip install --force-reinstall gdown
 ```
 
+HPC if cuda is not working...
+```bash
+module avail | grep cuda
+module avail | grep torch
+module load >cuda or torch version you want (related to python 8 if that's what you're running)<
+```
+
 
 # HPC
 
