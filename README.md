@@ -23,6 +23,12 @@ module load >cuda or torch version you want (related to python 8 if that's what 
 
 # HPC
 
+0. If from home use VPN (Cisco)
+- Connect to vpn.dtu.dk
+- Use student login
+
+
+
 1. Setting up hpc in .ssh and connect through ssh. Can be done through VSCode or the terminal.
 ```bash
 ssh hpc
