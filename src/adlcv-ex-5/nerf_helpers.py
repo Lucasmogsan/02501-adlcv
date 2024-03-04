@@ -288,11 +288,9 @@ def prepare_viewdirs_chunks(points, rays_d, encoding_function, chunksize: int = 
 
 
 def nerf_forward(
-    rays_o,
-    rays_d,
-    near,
-    far,
-    encoding_fn,
+    rays_o, rays_d,
+    near, far,  # 
+    encoding_fn, # positional encoding
     coarse_model,
     kwargs_sample_stratified=None,
     n_samples_hierarchical=0,

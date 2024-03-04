@@ -70,7 +70,8 @@ def main(scene_name):
     print(f'Trainable parameters: {total_params/1_000_000:.2f}M')
 
     # Loss function
-    loss_fn = torch.nn.MSELoss()
+    mse = torch.nn.MSELoss()
+    loss_plot = []
     
     #### Training loop
     logger = SummaryWriter(os.path.join('runs', para['expname']))
@@ -112,7 +113,7 @@ def main(scene_name):
         rgb_predicted = outputs['rgb_map']
         # TASK 5: training loop
         #HINT: MSE betweein rgb_predicted and target_img 
-        loss = loss_fn(rgb_predicted, target_img)
+        loss = mse(target_img, rgb_predicted)
         #HINT: zero gradient to avoid accumulation of gradients
         optimizer.zero_grad()
         #HINT: loss backward to compute gradients
@@ -136,6 +137,14 @@ def main(scene_name):
             render_video(render_poses, height, width, focal,
                 near, far, embed_origin, model, kwargs_sample_stratified, kwargs_sample_hierarchical, para, fine_model, embed_view, output_path=output_path
             )
+            loss_plot.append(loss.item())
+
+    # Save loss plot:
+    plt.plot(loss_plot)
+    plt.title('Training loss')
+    plt.xlabel('Iterations')
+    plt.ylabel('MSE')
+    plt.savefig(os.path.join(videos_path, 'loss_plot.png'))
 
     logger.close()
 

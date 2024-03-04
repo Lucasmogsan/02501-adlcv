@@ -18,12 +18,15 @@ HPC if cuda is not working...
 module avail | grep cuda
 module avail | grep torch
 module load >cuda or torch version you want (related to python 8 if that's what you're running)<
+
+module load cuda/11.8
+module load nvidiamodulusbase/pytorch-1.13.0-python-3.8.16
 ```
 
 
 # HPC
 
-0. If from home use VPN (Cisco)
+0. If from home use VPN [Cisco](https://www.inside.dtu.dk/en/medarbejder/it-og-telefoni/it-support-og-kontakt/guides/remote/vpn-cisco-anyconnect)
 - Connect to vpn.dtu.dk
 - Use student login
 
