@@ -13,6 +13,13 @@ We define `conf-num` as the index of the loss function to use (1-3)
 * `python train.py --conf <conf-num>`
 * `python slow_movie.py --conf <conf-num>`
 
+```bash
+python train.py --conf 1
+python slow_movie.py --conf 1
+```
+
+
+
 
 ## Logging
 * The code uses tensorboard to log the train loss. Use the command `tensorboard --logdir=runs` to observe the training loss.

@@ -179,3 +179,8 @@ src/adlcv-ex-4/runs
 
 src/adlcv-ex-5/data
 src/adlcv-ex-5/rendered_videos
+
+src/adlcv-ex-6/data
+src/adlcv-ex-6/results
+src/adlcv-ex-6/runs
+src/adlcv-ex-6/weights

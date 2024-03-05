@@ -67,7 +67,7 @@ elif conf == 2: # reconstruction + biderectional loss
     losses_dict = {'rec_loss':1, 'bidir_rec_loss':1}
     lr = 1e-2
 elif conf == 3: # reconstruction + biderectional loss + feature loss
-    losses_dict = {'rec_loss':1, 'bidir_rec_loss':1, 'feature_loss':1}
+    losses_dict = {'rec_loss':0, 'bidir_rec_loss':0, 'feature_loss':1}
     lr = 1e-3
 else:
     raise AttributeError('Invalid configuration!')
@@ -92,9 +92,11 @@ for epoch in tqdm(range(NUM_EPOCHS), desc=f'Training for conf {conf}'):
         f1, f2, f3 = f1.to(device), f2.to(device), f3.to(device)    # Move the data to the device (if on GPU)
 
         # Output / Prediction
-        f2_hat = model(f1, f3)
+        output = model(f1, f3)
 
-        batch_loss = loss_fn(f2_hat, f2)
+        f2_hat = output['output_im']
+
+        batch_loss = loss_fn(output, f2)
         optimizer.zero_grad()
         batch_loss.backward()
         optimizer.step()
