@@ -1,12 +1,13 @@
 import torch
 import torch.nn as nn
-from torchvision.models import vgg19, VGG19_Weights
+from torchvision.models import vgg19 #, VGG19_Weights
 
 
 class VGG(nn.Module):
     def __init__(self):
         super(VGG, self).__init__()
-        vgg = vgg19(weights=VGG19_Weights.DEFAULT)
+        #vgg = vgg19(weights=VGG19_Weights.DEFAULT)
+        vgg = vgg19(pretrained=True)    # Works for old pytorch (python 3.8)
         self.vgg_relu4_4 = vgg.features[:27]
 
     def forward(self, input):
@@ -40,14 +41,14 @@ class VFILoss(nn.Module):
         """
         total_loss = 0
         for loss_func, weight in self.losses_dict.items():
-            if loss_func == 'rec_loss': # Reconstruction loss
-                tmp_loss = None # TASK 3
+            if loss_func == 'rec_loss': # Reconstruction loss (L1 loss)
+                tmp_loss = self.l1_loss(input, target)
 
             elif loss_func == 'bidir_rec_loss': # Bidirectional reconstruction loss
-                tmp_loss = None # TASK 4
+                tmp_loss = self.l1_loss(input, target) + self.l1_loss(input, target)
 
             elif loss_func == 'feature_loss': # Feature Loss
-                tmp_loss = None # TASK 5
+                tmp_loss = self.l2_loss(self.vgg(input), self.vgg(target))
 
 
             else:

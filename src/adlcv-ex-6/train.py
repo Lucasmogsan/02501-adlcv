@@ -89,9 +89,12 @@ for epoch in tqdm(range(NUM_EPOCHS), desc=f'Training for conf {conf}'):
     total_train_loss = 0
     for f1, f2, f3 in train_loader:
         # TASK 2: Implement the training loop
-        ...
+        f1, f2, f3 = f1.to(device), f2.to(device), f3.to(device)    # Move the data to the device (if on GPU)
 
-        batch_loss = loss_fn(..., ...)
+        # Output / Prediction
+        f2_hat = model(f1, f3)
+
+        batch_loss = loss_fn(f2_hat, f2)
         optimizer.zero_grad()
         batch_loss.backward()
         optimizer.step()
